@@ -10,8 +10,10 @@
 
 AnyHtmlOllama is a standalone web application that leverages Ollama's local LLMs to generate functional HTML/JavaScript tools directly in your browser. With a simple, intuitive interface, you can prompt the model to create fully interactive web applications without writing code. Perfect for educational purposes, rapid prototyping, or exploring AI capabilities.
 
+The application uses regular expressions to intelligently extract HTML code from Ollama's responses. It first tries to identify code blocks with ```html tags, then falls back to looking for DOCTYPE patterns, ensuring reliable code extraction regardless of how the model formats its output.
+
 - 🔍 **Local AI**: Runs entirely on your machine using Ollama
-- 🧩 **No Dependencies**: Pure HTML/JavaScript - no frameworks or complex setups
+- 🧩 **Simple Stack**: Pure HTML/JavaScript with a lightweight Python HTTP server (built-in module only)
 - 💾 **Save & Reuse**: Save generated tools to reuse or modify later
 - 🎮 **Instant Preview**: See your tool in action immediately
 - 🌐 **Pure Web Tech**: Uses standard HTML, CSS, and JavaScript
@@ -24,7 +26,10 @@ AnyHtmlOllama is a standalone web application that leverages Ollama's local LLMs
    - Download from [ollama.ai](https://ollama.ai)
    - Make sure it's running and accessible at http://localhost:11434
 
-2. **Python** (for local server): Only needed to start the local web server
+2. **Python**: Recommended for the best experience
+   - While the app itself is HTML/JavaScript, Python is needed for the local web server
+   - Only uses Python's built-in HTTP server module (no additional packages required)
+   - The server enables proper file discovery and avoids CORS issues
    - Any recent version will work (3.x recommended)
 
 ### Setup
@@ -36,15 +41,21 @@ AnyHtmlOllama is a standalone web application that leverages Ollama's local LLMs
    ```
 
 2. **Run the application**:
-   - **Windows**: Double-click `start_server.bat`
-   - **macOS/Linux**: Run `./start_server.sh` (you may need to `chmod +x start_server.sh` first)
-   - Then open your browser to [http://localhost:8000/AnyHtmlOllama.html](http://localhost:8000/AnyHtmlOllama.html)
+   - **Recommended Method**: Use the local web server for full functionality
+     - **Windows**: Double-click `start_server.bat`
+     - **macOS/Linux**: Run `./start_server.sh` (you may need to `chmod +x start_server.sh` first)
+     - Then open your browser to [http://localhost:8000/AnyHtmlOllama.html](http://localhost:8000/AnyHtmlOllama.html)
+   - **Alternative**: Open `AnyHtmlOllama.html` directly in your browser (file:// protocol)
+     - Note: This method has limitations with file discovery and may encounter CORS issues
 
 ## 🧰 Usage
 
 1. **Select a model**: Choose from the available Ollama models (gemma, llama, etc.)
 2. **Enter a prompt**: Describe the HTML tool you want to create
 3. **Generate**: Click "Generate Tool" and wait for the AI to create your application
+   - Behind the scenes, regex patterns extract clean HTML code from the AI's response
+   - First tries to match ````html` markdown code blocks
+   - Then falls back to matching HTML `<!DOCTYPE...>` patterns if needed
 4. **Preview & Adjust**: View the code and live preview, make adjustments as needed
 5. **Save**: Give your tool a name and save it for future use
 
