@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perlin Noise Explorer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        canvas {
+            border: 1px solid #000;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .slider {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Perlin Noise Explorer</h1>
+    
+    <canvas id="canvas" width="400" height="300"></canvas>
+
+    <input class="slider" type="range" id="scale" min="1" max="20" step="1">
+    <label for="scale">Noise Scale:</label><br>
+
+    <input class="slider" type="range" id="speed" min="1" max="100" step="1">
+    <label for="speed">Animation Speed:</label><br>
+
+    <input class="slider" type="range" id="resolution" min="1" max="10" step="1">
+    <label for="resolution">Pixel Resolution:</label><br>
+
+    <label><input type="checkbox" id="toggleColor"> Toggle Color Mode</label><br>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let scale = 1;
+        let speed = 5;
+        let resolution = 10;
+
+        function generateNoise() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for (let y = 0; y < canvas.height; y += resolution) {
+                for (let x = 0; x < canvas.width; x += resolution) {
+                    const noiseValue = Math.sin(x * scale + speed) * Math.cos(y * scale + speed);
+                    
+                    ctx.fillStyle = getColor(noiseValue);
+                    ctx.fillRect(x, y, resolution, resolution);
+                }
+            }
+
+            if (Math.random() < 0.01) {
+                drawHelloWorld();
+            }
+        }
+
+        function getColor(value) {
+            return rainbowColor(value)[0];
+        }
+
+        function rainbowColor(value) {
+            const hue = (value + 255) % 360;
+            return `hsl(${hue}, 100%, 50%)`;
+        }
+
+        function drawHelloWorld() {
+            ctx.font = '24px Arial';
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+            ctx.textAlign = 'center';
+            ctx.fillText('Hello World', canvas.width / 2, canvas.height / 2);
+        }
+
+        const colorToggle = document.getElementById('toggleColor');
+        colorToggle.addEventListener('change', () => {
+            const prevFillStyle = ctx.fillStyle;
+            ctx.fillStyle = colorToggle.checked ? 'rgba(255, 255, 255, 0.95)' : 'black';
+            
+            canvas.style.background = colorToggle.checked ? 'linear-gradient(to bottom right, hsl(0, 100%, 50%), hsl(60, 100%, 50%))' : '#fff';
+            
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = prevFillStyle;
+        });
+
+        setInterval(() => {
+            generateNoise();
+        }, 200);
+
+        document.getElementById('scale').addEventListener('input', e => scale = e.target.value);
+        document.getElementById('speed').addEventListener('input', e => speed = e.target.value);
+        document.getElementById('resolution').addEventListener('input', e => resolution = e.target.value);
+    </script>
+</body>
+</html>

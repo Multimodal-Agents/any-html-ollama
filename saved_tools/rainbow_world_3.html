@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Rainbow Hello World</title>
+<style>
+body {
+  background: linear-gradient(45deg, #FF0000, #FF9900, #FF6600, #FF3300, #FF0000, #CC0000, #990000, #660000, #330000, #000000);
+  overflow: hidden;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#hello-world {
+  font-family: sans-serif;
+  font-size: 3em;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  animation: moveHello 10s linear infinite;
+}
+
+.pot-of-gold {
+  width: 100px;
+  height: 100px;
+  background: #FFD700;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: sparkle 2s linear infinite;
+}
+
+@keyframes moveHello {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(100vw));
+  }
+}
+
+@keyframes sparkle {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+</style>
+</head>
+<body>
+  <div id="hello-world">Hello World</div>
+  <div class="pot-of-gold"></div>
+</body>
+</html>

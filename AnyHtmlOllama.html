@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnyHtmlOllama - AI Tool Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #16213e;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7c3aed;
+            --accent-gradient: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-accent: #00d4ff;
+            --border-color: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-bar {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-button {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .main-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            height: calc(100vh - 80px);
+        }
+
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-header {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 1rem;
+            overflow: auto;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .input-field {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        select.input-field {
+            cursor: pointer;
+        }
+
+        .textarea-field {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .button {
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button-secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .code-preview {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            overflow: auto;
+            height: 300px;
+        }
+
+        .live-preview {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            height: 300px;
+            overflow: auto;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--accent-primary);
+            border-bottom: 2px solid var(--accent-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .file-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+        }
+
+        .file-item {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .file-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border-color);
+            border-radius: 50%;
+            border-top-color: var(--accent-primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success { background: var(--success); }
+        .notification.error { background: var(--error); }
+        .notification.warning { background: var(--warning); }
+        .notification.info { background: var(--accent-primary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Syntax highlighting */
+        .hljs-tag { color: #7c3aed; }
+        .hljs-name { color: #00d4ff; }
+        .hljs-attr { color: #10b981; }
+        .hljs-string { color: #f59e0b; }
+        .hljs-comment { color: #64748b; }
+        .hljs-keyword { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">AnyHtmlOllama</div>
+        <div class="nav-bar" id="navBar" style="display: none;">
+            <button class="nav-button" onclick="returnToMainMenu()">← Main Menu</button>
+        </div>
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>Ollama Connected</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Panel: Input & Configuration -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>Tool Generator</span>
+                <button class="button button-secondary" onclick="refreshModels()">↻ Refresh</button>
+            </div>
+            <div class="panel-content">
+                <div class="input-group">
+                    <label class="input-label">Select Model</label>
+                    <select id="modelSelect" class="input-field">
+                        <option value="">Loading models...</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Tool Description</label>
+                    <textarea id="promptInput" class="input-field textarea-field" 
+                        placeholder="Describe the HTML tool you want to create..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="button" onclick="generateTool()" id="generateBtn">
+                        Generate Tool
+                    </button>
+                    <button class="button button-secondary" onclick="clearAll()">
+                        Clear All
+                    </button>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Load Existing</label>
+                    <div class="tabs">
+                        <button class="tab active" onclick="switchTab('tools')">Tools</button>
+                        <button class="tab" onclick="switchTab('prompts')">Prompts</button>
+                    </div>
+                    
+                    <div id="toolsTab" class="tab-content active">
+                        <div class="file-list" id="toolsList"></div>
+                        <div class="button-group" style="margin-top: 0.5rem;">
+                            <button class="button button-secondary" onclick="loadSelectedTool()">Load Tool</button>
+                            <button class="button button-secondary" onclick="refreshFiles()">↻ Refresh</button>
+                            <button class="button button-secondary" onclick="openSavedToolsDirectory()">📁 Browse</button>
+                        </div>
+                    </div>
+                    
+                    <div id="promptsTab" class="tab-content">
+                        <div class="file-list" id="promptsList"></div>
+                        <div class="button-group" style="margin-top: 0.5rem;">
+                            <button class="button button-secondary" onclick="loadSelectedPrompt()">Load Prompt</button>
+                            <button class="button button-secondary" onclick="refreshFiles()">↻ Refresh</button>
+                            <button class="button button-secondary" onclick="openSavedToolsDirectory()">📁 Browse</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Preview & Output -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>Code Preview & Live Output</span>
+                <div class="button-group">
+                    <button class="button button-secondary" onclick="switchPreview('code')">Code</button>
+                    <button class="button button-secondary" onclick="switchPreview('live')">Live</button>
+                    <button class="button" onclick="transformTool()" id="transformBtn" disabled>
+                        Transform Now
+                    </button>
+                </div>
+            </div>
+            <div class="panel-content">
+                <div id="codePreview" class="tab-content active">
+                    <pre class="code-preview" id="generatedCode">Generated code will appear here...</pre>
+                </div>
+                <div id="livePreview" class="tab-content">
+                    <iframe class="live-preview" id="previewFrame" sandbox="allow-scripts"></iframe>
+                </div>
+                
+                <div class="input-group" style="margin-top: 1rem;">
+                    <label class="input-label">Tool Name</label>
+                    <input type="text" id="toolName" class="input-field" 
+                        placeholder="Enter tool name for saving...">
+                </div>
+                
+                <div class="button-group">
+                    <button class="button" onclick="saveTool()" id="saveBtn" disabled>
+                        Save Tool
+                    </button>
+                    <button class="button button-secondary" onclick="copyToClipboard()">
+                        Copy Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentCode = '';
+        let currentPrompt = '';
+        let availableModels = [];
+        let selectedTool = null;
+        let selectedPrompt = null;
+
+        // Initialize the application
+        async function init() {
+            // Check if we're running from file:// protocol and show appropriate message
+            if (window.location.protocol === 'file:') {
+                showNotification('For the best experience, run start_server.bat (Windows) or start_server.sh (Linux/Mac) to enable automatic file discovery.', 'info');
+            }
+            
+            await loadModels();
+            await loadFiles();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            // Enable transform button when code is generated
+            document.addEventListener('codeGenerated', () => {
+                document.getElementById('transformBtn').disabled = false;
+                document.getElementById('saveBtn').disabled = false;
+            });
+        }
+
+        // Load available models from Ollama
+        async function loadModels() {
+            try {
+                const response = await fetch('http://127.0.0.1:11434/api/tags');
+                const data = await response.json();
+                availableModels = data.models || [];
+                
+                const select = document.getElementById('modelSelect');
+                select.innerHTML = '<option value="">Select a model...</option>';
+                
+                availableModels.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.name;
+                    option.textContent = model.name;
+                    select.appendChild(option);
+                });
+                
+                // Select first model by default
+                if (availableModels.length > 0) {
+                    select.value = availableModels[0].name;
+                }
+            } catch (error) {
+                console.error('Failed to load models:', error);
+                showNotification('Failed to connect to Ollama', 'error');
+            }
+        }
+
+        async function refreshModels() {
+            showNotification('Refreshing models...', 'warning');
+            await loadModels();
+            showNotification('Models refreshed', 'success');
+        }
+
+        // Generate tool using Ollama
+        async function generateTool() {
+            const model = document.getElementById('modelSelect').value;
+            const prompt = document.getElementById('promptInput').value;
+            
+            if (!model) {
+                showNotification('Please select a model', 'error');
+                return;
+            }
+            
+            if (!prompt.trim()) {
+                showNotification('Please enter a tool description', 'error');
+                return;
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<span class="loading"></span> Generating...';
+            
+            try {
+                const fullPrompt = 'Using only HTML with embedded JavaScript, create a single HTML file for: ' + prompt + '. Make it functional, beautiful, and complete. Return only the HTML code with no explanations. Ensure the code is properly formatted and includes all necessary styling and scripts inline.';
+
+                const response = await fetch('http://127.0.0.1:11434/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        prompt: fullPrompt,
+                        stream: false
+                    })
+                });
+
+                const data = await response.json();
+                const generatedText = data.response;
+                
+                // Extract HTML code using regex
+                const htmlMatch = generatedText.match(/```html\n([\s\S]*?)\n```/);
+                let htmlCode;
+                
+                if (htmlMatch) {
+                    htmlCode = htmlMatch[1];
+                } else {
+                    // If no code blocks, try to extract HTML from the response
+                    const docTypeMatch = generatedText.match(/(<!DOCTYPE[\s\S]*)/);
+                    if (docTypeMatch) {
+                        htmlCode = docTypeMatch[1];
+                    } else {
+                        htmlCode = generatedText;
+                    }
+                }
+
+                currentCode = htmlCode.trim();
+                currentPrompt = prompt;
+                
+                // Update preview
+                document.getElementById('generatedCode').textContent = currentCode;
+                updateLivePreview();
+                
+                // Trigger event for enabling buttons
+                document.dispatchEvent(new CustomEvent('codeGenerated'));
+                
+                showNotification('Tool generated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Generation failed:', error);
+                showNotification('Failed to generate tool', 'error');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = 'Generate Tool';
+            }
+        }
+
+        // Update live preview
+        function updateLivePreview() {
+            const iframe = document.getElementById('previewFrame');
+            const blob = new Blob([currentCode], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            iframe.src = url;
+        }
+
+        // Switch between code and live preview
+        function switchPreview(type) {
+            const codePreview = document.getElementById('codePreview');
+            const livePreview = document.getElementById('livePreview');
+            
+            if (type === 'code') {
+                codePreview.classList.add('active');
+                livePreview.classList.remove('active');
+            } else {
+                codePreview.classList.remove('active');
+                livePreview.classList.add('active');
+                if (currentCode) updateLivePreview();
+            }
+        }
+
+        // Transform the current page into the generated tool
+        function transformTool() {
+            if (!currentCode) {
+                showNotification('No code to transform', 'error');
+                return;
+            }
+            
+            // Show navigation bar before transforming
+            document.getElementById('navBar').style.display = 'flex';
+            
+            // Replace the current document with the generated code
+            document.open();
+            document.write(currentCode);
+            document.close();
+        }
+
+        // Return to main menu
+        function returnToMainMenu() {
+            // Reload the original AnyHtmlOllama interface
+            window.location.reload();
+        }
+
+        // Save tool to file system using File System Access API
+        async function saveTool() {
+            const toolName = document.getElementById('toolName').value.trim();
+            
+            if (!toolName) {
+                showNotification('Please enter a tool name', 'error');
+                return;
+            }
+            
+            if (!currentCode) {
+                showNotification('No code to save', 'error');
+                return;
+            }
+
+            try {
+                // Try to use File System Access API to save to saved_tools directory
+                if ('showSaveFilePicker' in window) {
+                    await saveWithFileSystemAPI(toolName);
+                } else {
+                    // Fallback to downloads
+                    await saveToDownloads(toolName);
+                    showNotification('Files saved to Downloads. Please move them to the saved_tools folder.', 'warning');
+                }
+                
+            } catch (error) {
+                console.error('Save failed:', error);
+                // Try fallback if the main method fails
+                try {
+                    await saveToDownloads(toolName);
+                    showNotification('Files saved to Downloads. Please move them to the saved_tools folder.', 'warning');
+                } catch (fallbackError) {
+                    showNotification('Failed to save tool', 'error');
+                }
+            }
+        }
+
+        // Save files using File System Access API to saved_tools directory
+        async function saveWithFileSystemAPI(toolName) {
+            try {
+                // Show directory picker to let user navigate to saved_tools folder
+                const dirHandle = await window.showDirectoryPicker({
+                    startIn: 'documents'
+                });
+                
+                showNotification('Please navigate to and select the saved_tools folder', 'info');
+                
+                // Save HTML file
+                const htmlFileHandle = await dirHandle.getFileHandle(`${toolName}.html`, {
+                    create: true
+                });
+                
+                const htmlWritable = await htmlFileHandle.createWritable();
+                await htmlWritable.write(currentCode);
+                await htmlWritable.close();
+                
+                // Save prompt as markdown
+                const promptContent = `# Tool Generation Prompt
+
+**Generated:** ${new Date().toLocaleString()}
+**Model:** ${document.getElementById('modelSelect').value}
+**Temperature:** 0.7
+
+## Original Prompt:
+
+${currentPrompt}
+
+## Tool Description:
+
+${toolName}
+
+---
+*Generated with AnyHtmlOllama*`;
+
+                const mdFileHandle = await dirHandle.getFileHandle(`${toolName}.md`, {
+                    create: true
+                });
+                
+                const mdWritable = await mdFileHandle.createWritable();
+                await mdWritable.write(promptContent);
+                await mdWritable.close();
+                
+                showNotification('Files saved successfully to saved_tools folder!', 'success');
+                
+                // Refresh the file list to show the new files
+                setTimeout(() => {
+                    refreshFiles();
+                }, 1000);
+                
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    showNotification('Save cancelled', 'warning');
+                    return;
+                }
+                throw error;
+            }
+        }
+
+        // Fallback: Save to Downloads folder
+        async function saveToDownloads(toolName) {
+            // Save HTML file
+            const htmlBlob = new Blob([currentCode], { type: 'text/html' });
+            const htmlUrl = URL.createObjectURL(htmlBlob);
+            const htmlLink = document.createElement('a');
+            htmlLink.href = htmlUrl;
+            htmlLink.download = toolName + '.html';
+            htmlLink.click();
+            
+            // Save prompt as markdown
+            const promptContent = `# Tool Generation Prompt
+
+**Generated:** ${new Date().toLocaleString()}
+**Model:** ${document.getElementById('modelSelect').value}
+**Temperature:** 0.7
+
+## Original Prompt:
+
+${currentPrompt}
+
+## Tool Description:
+
+${toolName}
+
+---
+*Generated with AnyHtmlOllama*`;
+            
+            const mdBlob = new Blob([promptContent], { type: 'text/markdown' });
+            const mdUrl = URL.createObjectURL(mdBlob);
+            const mdLink = document.createElement('a');
+            mdLink.href = mdUrl;
+            mdLink.download = toolName + '.md';
+            mdLink.click();
+        }
+
+        // Load files from saved_tools directory
+        async function loadFiles() {
+            // For local file structure, use embedded file list
+            await loadEmbeddedFiles();
+        }
+
+        // Load files by discovering them in the saved_tools directory
+        async function loadEmbeddedFiles() {
+            const toolsList = document.getElementById('toolsList');
+            const promptsList = document.getElementById('promptsList');
+            
+            toolsList.innerHTML = '';
+            promptsList.innerHTML = '';
+            
+            const discoveredFiles = new Set();
+            
+            try {
+                // Try to get directory listing via fetch (works with local server)
+                const response = await fetch('./saved_tools/');
+                const text = await response.text();
+                
+                // Parse HTML directory listing to extract file names
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const links = doc.querySelectorAll('a');
+                
+                links.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && (href.endsWith('.html') || href.endsWith('.md')) && !href.includes('../')) {
+                        discoveredFiles.add(href);
+                    }
+                });
+                
+                // Also try parsing from plain text directory listing
+                if (discoveredFiles.size === 0) {
+                    const lines = text.split('\n');
+                    lines.forEach(line => {
+                        const htmlMatch = line.match(/([^\/\s]+\.html)/);
+                        const mdMatch = line.match(/([^\/\s]+\.md)/);
+                        if (htmlMatch) discoveredFiles.add(htmlMatch[1]);
+                        if (mdMatch) discoveredFiles.add(mdMatch[1]);
+                    });
+                }
+                
+                console.log('Found files in directory listing:', discoveredFiles);
+            } catch (error) {
+                console.log('Directory listing not available, trying filesystem API...');
+                
+                // If we're running in a modern browser that supports the File System Access API
+                if ('showDirectoryPicker' in window && window.location.protocol !== 'file:') {
+                    try {
+                        // Try to use the origin private file system
+                        const savedToolsDir = await navigator.storage.getDirectory();
+                        const savedToolsHandle = await savedToolsDir.getDirectoryHandle('saved_tools', { create: false });
+                        
+                        // Iterate through the directory entries
+                        for await (const [name, handle] of savedToolsHandle.entries()) {
+                            if (name.endsWith('.html') || name.endsWith('.md')) {
+                                discoveredFiles.add(name);
+                            }
+                        }
+                        
+                        console.log('Found files using File System Access API:', discoveredFiles);
+                    } catch (fsError) {
+                        console.log('File System Access API error:', fsError);
+                    }
+                }
+                
+                // If still no files, use hardcoded set (only as a last resort)
+                if (discoveredFiles.size === 0 && window.location.protocol === 'file:') {
+                    console.log('Falling back to known file list for file:// protocol');
+                    // Last resort: Add known files in the saved_tools directory
+                    const knownFiles = [
+                        'rainbow_world_3.html', 'rainbow_world_3.md',
+                        'rainbow-hello-world.html', 'rainbow-hello-world.md',
+                        'saved_tools_bwtest.html'
+                    ];
+                    
+                    knownFiles.forEach(file => {
+                        discoveredFiles.add(file);
+                    });
+                }
+            }
+            
+            // Add discovered files to the appropriate lists
+            Array.from(discoveredFiles).sort().forEach(fileName => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.textContent = fileName;
+                
+                if (fileName.endsWith('.html')) {
+                    item.onclick = () => selectFile(item, 'tool');
+                    toolsList.appendChild(item);
+                } else if (fileName.endsWith('.md')) {
+                    item.onclick = () => selectFile(item, 'prompt');
+                    promptsList.appendChild(item);
+                }
+            });
+            
+            // Show messages if no files found
+            if (toolsList.children.length === 0) {
+                const noFiles = document.createElement('div');
+                noFiles.className = 'file-item';
+                noFiles.textContent = 'No HTML tools found. Generate a tool first or use Browse to load files.';
+                noFiles.style.opacity = '0.5';
+                toolsList.appendChild(noFiles);
+            }
+            
+            if (promptsList.children.length === 0) {
+                const noPrompts = document.createElement('div');
+                noPrompts.className = 'file-item';
+                noPrompts.textContent = 'No prompt files found. Generate a tool first to create prompt files.';
+                noPrompts.style.opacity = '0.5';
+                promptsList.appendChild(noPrompts);
+            }
+        }
+
+        function selectFile(element, type) {
+            const parent = element.parentNode;
+            parent.querySelectorAll('.file-item').forEach(item => {
+                item.style.background = '';
+                item.style.color = '';
+            });
+            
+            element.style.background = 'var(--bg-tertiary)';
+            element.style.color = 'var(--accent-primary)';
+            
+            if (type === 'tool') {
+                selectedTool = element.textContent;
+            } else {
+                selectedPrompt = element.textContent;
+            }
+        }
+
+        async function loadSelectedTool() {
+            if (!selectedTool) {
+                showNotification('Please select a tool to load', 'error');
+                return;
+            }
+            
+            showNotification('Loading ' + selectedTool + '...', 'warning');
+            
+            try {
+                // Get the actual file content from the embedded file system
+                const content = await getToolContent(selectedTool);
+                if (content) {
+                    currentCode = content;
+                    document.getElementById('generatedCode').textContent = currentCode;
+                    document.getElementById('toolName').value = selectedTool.replace('.html', '');
+                    updateLivePreview();
+                    showNotification(selectedTool + ' loaded successfully!', 'success');
+                    
+                    // Trigger event for enabling buttons
+                    document.dispatchEvent(new CustomEvent('codeGenerated'));
+                } else {
+                    throw new Error('File content not found');
+                }
+            } catch (error) {
+                console.error('Failed to load file:', error);
+                showNotification('Failed to load ' + selectedTool + '. File may not exist in saved_tools directory.', 'error');
+            }
+        }
+
+        // Get tool content - fetch from saved_tools directory
+        async function getToolContent(fileName) {
+            try {
+                // Try to fetch the file directly from saved_tools directory
+                const response = await fetch(`./saved_tools/${fileName}`);
+                if (response.ok) {
+                    return await response.text();
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error(`Failed to fetch ${fileName}:`, error);
+                
+                // If we're running from file:// protocol, offer to use the file picker
+                if (window.location.protocol === 'file:') {
+                    return await getFileWithPicker(fileName);
+                } else {
+                    showNotification(`Failed to load ${fileName}. Make sure you're running a local server or use the Browse button.`, 'error');
+                    return null;
+                }
+            }
+        }
+
+        async function getFileWithPicker(fileName) {
+            // Use File System Access API to let user select the file
+            if ('showOpenFilePicker' in window) {
+                try {
+                    showNotification('Please select ' + fileName + ' from the saved_tools folder', 'info');
+                    
+                    const [fileHandle] = await window.showOpenFilePicker({
+                        types: [{
+                            description: 'HTML files',
+                            accept: { 'text/html': ['.html'] }
+                        }],
+                        startIn: 'documents'
+                    });
+                    
+                    const file = await fileHandle.getFile();
+                    return await file.text();
+                    
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        showNotification('File selection cancelled', 'warning');
+                        return null;
+                    }
+                    console.error('File picker error:', error);
+                    return null;
+                }
+            }
+            
+            // Fallback: Show manual instructions
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual File Loading</title>
+    <style>
+        body { 
+            background: #1a1a2e; 
+            color: #fff; 
+            font-family: Arial; 
+            text-align: center; 
+            padding: 50px; 
+            line-height: 1.6;
+        }
+        .message { 
+            background: #16213e; 
+            border: 1px solid #334155; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin: 20px auto; 
+            max-width: 600px; 
+        }
+        code { 
+            background: #0a0a0f; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            color: #00d4ff; 
+        }
+    </style>
+</head>
+<body>
+    <div class="message">
+        <h1>📁 Manual File Loading</h1>
+        <p>To load <strong>${fileName}</strong>:</p>
+        <ol style="text-align: left;">
+            <li>Open the <code>saved_tools</code> folder (next to this HTML file)</li>
+            <li>Open <code>${fileName}</code> in any text editor</li>
+            <li>Copy all the HTML content (Ctrl+A, Ctrl+C)</li>
+            <li>Paste it into the code preview area below</li>
+            <li>Click "Transform Now" to use it</li>
+        </ol>
+        <p><em>No Python or server needed! This is just a browser security limitation.</em></p>
+    </div>
+</body>
+</html>`;
+        }
+
+        async function loadSelectedPrompt() {
+            if (!selectedPrompt) {
+                showNotification('Please select a prompt to load', 'error');
+                return;
+            }
+            
+            showNotification('Loading ' + selectedPrompt + '...', 'warning');
+            
+            // Load the prompt content
+            await loadPromptMock(selectedPrompt);
+        }
+
+        async function loadPromptMock(fileName) {
+            try {
+                // Fetch the actual MD file from the saved_tools directory
+                const response = await fetch(`./saved_tools/${fileName}`);
+                if (response.ok) {
+                    const mdContent = await response.text();
+                    
+                    // Extract the original prompt from the MD file content
+                    // Typically between "## Original Prompt:" and the next section
+                    let promptContent = '';
+                    const promptMatch = mdContent.match(/## Original Prompt:\s*\n\s*([\s\S]*?)(?:\n\s*##|$)/);
+                    
+                    if (promptMatch && promptMatch[1]) {
+                        promptContent = promptMatch[1].trim();
+                    } else {
+                        // Fallback: Just show the whole content
+                        promptContent = mdContent;
+                    }
+                    
+                    document.getElementById('promptInput').value = promptContent;
+                    currentPrompt = promptContent;
+                    showNotification(fileName + ' loaded successfully!', 'success');
+                } else {
+                    throw new Error('Failed to fetch MD file');
+                }
+            } catch (error) {
+                console.error('Failed to load prompt file:', error);
+                
+                // If running from file:// protocol, offer file picker
+                if (window.location.protocol === 'file:') {
+                    try {
+                        // Use File System Access API to let user select the file
+                        if ('showOpenFilePicker' in window) {
+                            showNotification('Please select ' + fileName + ' from the saved_tools folder', 'info');
+                            
+                            const [fileHandle] = await window.showOpenFilePicker({
+                                types: [{
+                                    description: 'Markdown files',
+                                    accept: { 'text/markdown': ['.md'] }
+                                }],
+                                startIn: 'documents'
+                            });
+                            
+                            const file = await fileHandle.getFile();
+                            const mdContent = await file.text();
+                            
+                            // Extract the original prompt from the MD file content
+                            let promptContent = '';
+                            const promptMatch = mdContent.match(/## Original Prompt:\s*\n\s*([\s\S]*?)(?:\n\s*##|$)/);
+                            
+                            if (promptMatch && promptMatch[1]) {
+                                promptContent = promptMatch[1].trim();
+                            } else {
+                                // Fallback: Just show the whole content
+                                promptContent = mdContent;
+                            }
+                            
+                            document.getElementById('promptInput').value = promptContent;
+                            currentPrompt = promptContent;
+                            showNotification(fileName + ' loaded successfully!', 'success');
+                            return;
+                        }
+                    } catch (pickerError) {
+                        if (pickerError.name !== 'AbortError') {
+                            console.error('File picker error:', pickerError);
+                        }
+                    }
+                }
+                
+                showNotification('Failed to load ' + fileName + '. Please manually copy the prompt from the file.', 'error');
+            }
+        }
+
+        function refreshFiles() {
+            showNotification('Refreshing files...', 'warning');
+            loadFiles();
+            setTimeout(() => showNotification('Files refreshed', 'success'), 500);
+        }
+
+        async function openSavedToolsDirectory() {
+            // This is triggered by the Browse button - open file picker
+            if ('showOpenFilePicker' in window) {
+                try {
+                    // Get the current tab to determine what file type to open
+                    const currentTab = document.querySelector('.tab-button.active');
+                    let fileType = 'html';
+                    let pickerTitle = 'Please select an HTML tool file from the saved_tools folder';
+                    
+                    if (currentTab && currentTab.getAttribute('data-tab') === 'prompts') {
+                        fileType = 'md';
+                        pickerTitle = 'Please select a Markdown (.md) prompt file from the saved_tools folder';
+                    }
+                    
+                    showNotification(pickerTitle, 'info');
+                    
+                    const fileTypes = {
+                        'html': {
+                            description: 'HTML files',
+                            accept: { 'text/html': ['.html'] }
+                        },
+                        'md': {
+                            description: 'Markdown files',
+                            accept: { 'text/markdown': ['.md'] }
+                        }
+                    };
+                    
+                    const [fileHandle] = await window.showOpenFilePicker({
+                        types: [fileTypes[fileType]],
+                        startIn: 'documents'
+                    });
+                    
+                    const file = await fileHandle.getFile();
+                    const content = await file.text();
+                    
+                    if (fileType === 'html') {
+                        // Load the content into code preview
+                        document.getElementById('generatedCode').textContent = content;
+                        currentCode = content;
+                        updateLivePreview();
+                        selectedTool = file.name;
+                        showNotification('Tool loaded: ' + file.name, 'success');
+                    } else {
+                        // Extract the prompt from the markdown file
+                        const promptMatch = content.match(/## Original Prompt:\s*\n\s*([\s\S]*?)(?:\n\s*##|$)/);
+                        let promptContent = '';
+                        
+                        if (promptMatch && promptMatch[1]) {
+                            promptContent = promptMatch[1].trim();
+                        } else {
+                            // Fallback: Just show the whole content
+                            promptContent = content;
+                        }
+                        
+                        document.getElementById('promptInput').value = promptContent;
+                        currentPrompt = promptContent;
+                        selectedPrompt = file.name;
+                        showNotification('Prompt loaded: ' + file.name, 'success');
+                    }
+                    
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        showNotification('File selection cancelled', 'warning');
+                    } else {
+                        console.error('File picker error:', error);
+                        showNotification('Failed to load file', 'error');
+                    }
+                }
+            } else {
+                // Fallback: Show instructions
+                const message = `
+To properly use file loading features:
+
+1. **Recommended**: Run a local web server:
+   • Open terminal in the AnyHtmlOllama folder
+   • Run: python -m http.server 8000
+   • Open: http://localhost:8000/AnyHtmlOllama.html
+
+2. **Alternative**: Manually copy files:
+   • Open files from saved_tools/ folder
+   • Copy and paste content as needed
+
+The saved_tools folder is located next to AnyHtmlOllama.html
+                `.trim();
+                
+                showNotification(message, 'info');
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            document.querySelector("[onclick=\"switchTab('" + tabName + "')\"]").classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // Utility functions
+        function copyToClipboard() {
+            if (!currentCode) {
+                showNotification('No code to copy', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(currentCode).then(() => {
+                showNotification('Code copied to clipboard!', 'success');
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('promptInput').value = '';
+            document.getElementById('toolName').value = '';
+            document.getElementById('generatedCode').textContent = 'Generated code will appear here...';
+            document.getElementById('previewFrame').src = '';
+            currentCode = '';
+            currentPrompt = '';
+            document.getElementById('transformBtn').disabled = true;
+            document.getElementById('saveBtn').disabled = true;
+            showNotification('All fields cleared', 'success');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification ' + type;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
