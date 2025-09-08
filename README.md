@@ -67,7 +67,27 @@ The application uses regular expressions to intelligently extract HTML code from
 - "Create a rainbow animated hello world with a pot of gold"
 - "Make a Perlin noise explorer with customizable parameters"
 
-## 📖 Documentation
+## � Screenshots
+
+### Main Interface
+
+Below is the main interface of AnyHtmlOllama with a prompt to "Build a simple drawing app with different colors and brush sizes":
+
+<div align="center">
+  <img src="docs/images/AnyHtmlOllama_ui_1.png" alt="AnyHtmlOllama Main Interface" width="100%" style="max-width:800px; border-radius:5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  <p><em>The main interface showing code generation and preview for a drawing app</em></p>
+</div>
+
+### Transformed Tool
+
+After clicking "Transform Now," the generated tool takes over the current page for a full-screen experience:
+
+<div align="center">
+  <img src="docs/images/AnyHtmlOllama_ui_2.png" alt="Transformed Drawing App Tool" width="100%" style="max-width:800px; border-radius:5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+  <p><em>The drawing app running as a standalone tool after transformation</em></p>
+</div>
+
+## �📖 Documentation
 
 For more detailed information, check the docs folder:
 

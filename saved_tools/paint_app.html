@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Drawing App</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f9;
+  }
+  canvas {
+    border: 2px solid #ccc;
+  }
+  .controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+<canvas id="drawingCanvas" width="800" height="600"></canvas>
+<div class="controls">
+  <input type="color" id="colorPicker" value="#000000">
+  <input type="range" id="brushSize" min="1" max="50" value="10" step="1">
+</div>
+
+<script>
+  const canvas = document.getElementById('drawingCanvas');
+  const ctx = canvas.getContext('2d');
+  let isDrawing = false;
+  let lastX = 0;
+  let lastY = 0;
+
+  function draw(e) {
+    if (!isDrawing) return;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  }
+
+  canvas.addEventListener('mousedown', (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  });
+
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', () => isDrawing = false);
+  canvas.addEventListener('mouseout', () => isDrawing = false);
+
+  const colorPicker = document.getElementById('colorPicker');
+  const brushSize = document.getElementById('brushSize');
+
+  function updateColor() {
+    ctx.strokeStyle = colorPicker.value;
+  }
+
+  function updateBrushSize() {
+    ctx.lineWidth = brushSize.value;
+  }
+
+  colorPicker.addEventListener('input', updateColor);
+  brushSize.addEventListener('input', updateBrushSize);
+
+  // Initialize colors and size
+  updateColor();
+  updateBrushSize();
+</script>
+</body>
+</html>
