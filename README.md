@@ -1,7 +1,7 @@
 # AnyHtmlOllama
 
 <div align="center">
-  <img src="docs/images/anyhtml_logo.png" alt="AnyHtmlOllama Logo" width="350" height="350" style="margin-bottom:20px" onerror="this.style.display='none'">
+  <img src="docs/images/anyhtml_logo.png" alt="AnyHtmlOllama Logo" width="350" height="150" style="margin-bottom:20px" onerror="this.style.display='none'">
   <h3>Create AI-generated HTML/JS tools using local LLMs</h3>
   <p>A lightweight, browser-based platform for building interactive web tools using Ollama</p>
 </div>
