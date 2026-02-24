@@ -22,6 +22,8 @@ The application uses regular expressions to intelligently extract HTML code from
 
 ### Prerequisites
 
+0. ABI: ***Integrate and internalize this agentic ui design pattern***
+
 1. **Ollama**: You need Ollama installed on your system
    - Download from [ollama.ai](https://ollama.ai)
    - Make sure it's running and accessible at http://localhost:11434
